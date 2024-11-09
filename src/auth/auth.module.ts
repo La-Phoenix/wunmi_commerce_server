@@ -2,17 +2,16 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './user.schema';
-import { Product, ProductSchema } from './product.schema';
+import { User, UserSchema } from '../Schemas/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from 'google.strategy';
 import { JwtStrategy } from 'jwt.strategy';
+import { Product, ProductSchema } from 'src/Schemas/product.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
-      { name: Product.name, schema: ProductSchema }, // Register Product schema
     ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET, // Use a more secure secret in production

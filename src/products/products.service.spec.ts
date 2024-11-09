@@ -1,18 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsService } from './products.service';
+// src/products/products.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateProductDto } from 'src/DTO/create-product.dto';
+import { Product } from 'src/Schemas/product.schema';
 
-describe('ProductsService', () => {
-  let service: ProductsService;
+@Injectable()
+export class ProductsService {
+  constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductsService],
-    }).compile();
-
-    service = module.get<ProductsService>(ProductsService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
+    const newProduct = new this.productModel(createProductDto);
+    return newProduct.save();
+  }
+}

@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { OAuth2Client } from 'google-auth-library';
 import { Request, Response } from 'express';
-import { User } from './user.schema';
+import { User } from '../Schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {

@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class ProductService {
+export class ProductsService {
   constructor(private readonly httpService: HttpService) {}
 
   // Fetch all products

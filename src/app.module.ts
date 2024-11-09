@@ -6,12 +6,23 @@ import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 
 import * as dotenv from 'dotenv';
-import { ProductModule } from './products/products.module';
+import { ProductsModule } from './products/products.module';
+import { User, UserSchema } from './Schemas/user.schema';
+import { Product, ProductSchema } from './Schemas/product.schema';
+import { JwtModule } from '@nestjs/jwt';
 
 dotenv.config();
 
 @Module({
-  imports: [ MongooseModule.forRoot(process.env.MONGO_URI), AuthModule, ProductModule],
+  imports: [ MongooseModule.forRoot(process.env.MONGO_URI) ,
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Product.name, schema: ProductSchema }, // Register Product schema
+    ]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET, // Use a more secure secret in production
+      signOptions: { expiresIn: '1d' },
+    }), AuthModule, ProductsModule],
   controllers: [AppController],
   providers: [AppService],
 })
