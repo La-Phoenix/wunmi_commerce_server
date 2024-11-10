@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { User, UserSchema } from './Schemas/user.schema';
 import { Product, ProductSchema } from './Schemas/product.schema';
 import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from './user/user.module';
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ dotenv.config();
     JwtModule.register({
       secret: process.env.JWT_SECRET, // Use a more secure secret in production
       signOptions: { expiresIn: '1d' },
-    }), AuthModule, ProductsModule],
+    }), AuthModule, ProductsModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })

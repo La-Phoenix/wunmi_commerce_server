@@ -18,13 +18,12 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      console.log(token)
       // Verify the token
       const user = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
-      request.user = user; // Attach user info to request
       console.log(user)
+      request.user = user; // Attach user info to request
       return true;
     } catch (e) {
       

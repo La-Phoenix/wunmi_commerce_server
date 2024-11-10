@@ -38,8 +38,7 @@ export class AuthController {
       );
     }
 
-    const user = await this.authService.register(name, confirmPassword, email);
-    
+    const user = await this.authService.register(name, confirmPassword, email)  as User & {_id: string};
     const token = await this.authService.generateToken(user);
 
     res.cookie('token', token, {
@@ -60,7 +59,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Get('google/callback')
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const user = req.user as User;
+    const user = req.user as User & {_id: string};
     const token = await this.authService.generateToken(user);
     // Redirect back to the frontend with the token in the URL
     res.cookie('token', token, {
@@ -76,7 +75,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() body: { email: string; password: string }, @Res() res: Response) {
     try {
-      const user = await this.authService.validateUser(body.email, body.password);
+      const user = await this.authService.validateUser(body.email, body.password) as User & {_id: string};
       const token = await this.authService.generateToken(user);
 
       res.cookie('token', token, {

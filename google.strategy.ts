@@ -24,6 +24,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       accessToken
     };
     const newUser = await this.authService.validateGoogleUser(user);
-    done(null, user);  // Pass the user object to the request
+    done(null, newUser);  // Pass the user object to the request
   }
 }

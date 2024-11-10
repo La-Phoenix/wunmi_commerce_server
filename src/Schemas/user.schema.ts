@@ -21,7 +21,7 @@ export class User {
   @Prop({ required: true, unique: true }) // Ensure email is unique
   email: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] }) // Foreign key to Product
+  @Prop({ type: [{ type: Types.ObjectId }], ref: 'Product'}) // Foreign key to Product
   products: Product[];
 }
 

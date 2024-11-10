@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../Schemas/user.schema';
@@ -46,14 +46,13 @@ export class AuthService {
         }
     }
 
-    async generateToken(user: User) :Promise<String>{
-        const payload = { email: user.email, name: user.name };
+    async generateToken(user: User & { _id: string}) :Promise<String>{
+        const payload = { email: user.email, name: user.name, id: user._id };
         return this.jwtService.sign(payload);
       }
 
     async validateGoogleUser(profile: {email: string, name: string}): Promise<User> {
         const { email, name } = profile;
-        console.log('validateUser: ',profile)
         try {
             let user = await this.userModel.findOne({ email });
             if (!user) {
@@ -65,7 +64,6 @@ export class AuthService {
             }
             return user;
         } catch (error) {
-            console.log(error)
             return error;
         }
       }
