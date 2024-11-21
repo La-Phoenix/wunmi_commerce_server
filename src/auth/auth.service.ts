@@ -46,9 +46,12 @@ export class AuthService {
         }
     }
 
-    async generateToken(user: User & { _id: string}) :Promise<String>{
+    async generateToken(user: User & { _id: string}) :Promise<string>{
         const payload = { email: user.email, name: user.name, id: user._id };
-        return this.jwtService.sign(payload);
+        return this.jwtService.sign(payload, {
+            secret: process.env.JWT_SECRET,
+            expiresIn: '1h',
+        });
       }
 
     async validateGoogleUser(profile: {email: string, name: string}): Promise<User> {

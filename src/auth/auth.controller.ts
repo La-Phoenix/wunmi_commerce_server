@@ -1,13 +1,22 @@
-import { Controller, Post, Body, HttpException, HttpStatus, Get, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, HttpException, HttpStatus, Get, UseGuards, Req, Res, NotFoundException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { OAuth2Client } from 'google-auth-library';
 import { Request, Response } from 'express';
 import { User } from '../Schemas/user.schema';
+import { UserService } from 'src/user/user.service';
+import { MailService } from './mail.service';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
+  ) {}
   private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
   @Post('register')
@@ -99,5 +108,65 @@ export class AuthController {
     }
   }
 
-  
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string, @Res() res: Response) {
+    try {    
+      const user = await this.userService.findByEmail(email) as User & {_id: string};
+      console.log(user)
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const token = await this.authService.generateToken(user);
+      console.log(token)
+      
+      await this.mailService.sendResetPasswordEmail(user.email, token);
+      return { message: 'Reset password link sent to your email' };
+    } catch (error) {
+      console.log(error)
+      // Handle known errors
+      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+        throw error;
+      }
+
+      // Catch unexpected errors
+      throw new InternalServerErrorException(
+        'An error occurred while resetting the password',
+      );
+    }
+  }
+
+@Post('reset-password')
+async resetPassword(
+  @Body('token') token: string,
+  @Body('newPassword') newPassword: string,
+) {
+  try {
+    const jwtuser = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    if (!jwtuser.email) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const result = await this.userService.update(jwtuser.email, hashedPassword);
+      if (result.modifiedCount === 0) {
+        throw new Error('Password update failed. User may not exist.');
+      }
+
+      return { message: 'Password reset successfully' };
+    } catch (error) {
+      // Handle known errors
+      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+        throw error;
+    }
+
+    // Catch unexpected errors
+      throw new InternalServerErrorException(
+        'An error occurred while resetting the password',
+      );
+    
+    }
+  }
+
 }
