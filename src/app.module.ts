@@ -11,11 +11,20 @@ import { User, UserSchema } from './Schemas/user.schema';
 import { Product, ProductSchema } from './Schemas/product.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
+import { appConfig } from './config/app.config';
+import { mailConfig } from './config/mail.config';
+import { dbConfig } from './config/db.config';
 
 dotenv.config();
 
 @Module({
-  imports: [ MongooseModule.forRoot(process.env.MONGO_URI) ,
+  imports: [ 
+    MongooseModule.forRoot(process.env.MONGO_URI) ,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [appConfig, mailConfig, dbConfig], // Load configurations
+    }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Product.name, schema: ProductSchema }, // Register Product schema

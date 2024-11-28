@@ -6,7 +6,7 @@ import { User, UserSchema } from '../Schemas/user.schema';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { GoogleStrategy } from 'google.strategy';
 import { JwtStrategy } from 'jwt.strategy';
-import { MailService } from './mail.service';
+import { MailService } from '../mail/mail.service';
 import { UserService } from 'src/user/user.service';
 
 @Module({

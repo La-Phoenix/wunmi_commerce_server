@@ -5,7 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { Request, Response } from 'express';
 import { User } from '../Schemas/user.schema';
 import { UserService } from 'src/user/user.service';
-import { MailService } from './mail.service';
+import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -112,15 +112,13 @@ export class AuthController {
   async forgotPassword(@Body('email') email: string, @Res() res: Response) {
     try {    
       const user = await this.userService.findByEmail(email) as User & {_id: string};
-      console.log(user)
       if (!user) {
         throw new NotFoundException('User not found');
       }
       const token = await this.authService.generateToken(user);
-      console.log(token)
       
       await this.mailService.sendResetPasswordEmail(user.email, token);
-      return { message: 'Reset password link sent to your email' };
+      res.json({ message: 'Reset password link sent to your email' })
     } catch (error) {
       console.log(error)
       // Handle known errors
