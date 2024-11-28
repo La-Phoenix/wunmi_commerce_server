@@ -8,6 +8,7 @@ import { UserService } from 'src/user/user.service';
 import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
   private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -120,7 +122,6 @@ export class AuthController {
       await this.mailService.sendResetPasswordEmail(user.email, token);
       res.json({ message: 'Reset password link sent to your email' })
     } catch (error) {
-      console.log(error)
       // Handle known errors
       if (error instanceof BadRequestException || error instanceof NotFoundException) {
         throw error;
@@ -140,7 +141,7 @@ async resetPassword(
 ) {
   try {
     const jwtuser = this.jwtService.verify(token, {
-      secret: process.env.JWT_SECRET,
+      secret: this.configService.get<string>('app.jwtSecret'),
     });
 
     if (!jwtuser.email) {
