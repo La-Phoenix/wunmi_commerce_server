@@ -7,6 +7,34 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @UseGuards(JwtAuthGuard)
+  @Get()
+  async getUsers() { 
+    try {
+      const users = await this.userService.find();
+      return users;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('An unexpected error occurred.');
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getUserById(@Param('id') userId: string) {
+    try {
+      const users = await this.userService.findUserById(userId);
+      return users;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('An unexpected error occurred.');
+    }
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id/products')
   async getUserWithProducts(@Param('id') userId: string) {

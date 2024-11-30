@@ -37,4 +37,11 @@ export class UserService {
         const user = await this.userModel.updateOne({email}, { $set: { password } });
         return user;
       }
+
+      async find(): Promise<User[]> {
+        return this.userModel.find().exec();
+      }
+      async findUserById(userId: string): Promise<User> {
+        return this.userModel.findById(userId).exec();
+      }
 }

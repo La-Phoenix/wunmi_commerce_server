@@ -15,6 +15,8 @@ import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './config/app.config';
 import { mailConfig } from './config/mail.config';
 import { dbConfig } from './config/db.config';
+import { MessageModule } from './message/message.module';
+import { ChatModule } from './chat/chat.module';
 
 dotenv.config();
 
@@ -32,7 +34,7 @@ dotenv.config();
     JwtModule.register({
       secret: process.env.JWT_SECRET, // Use a more secure secret in production
       signOptions: { expiresIn: '1d' },
-    }), AuthModule, ProductsModule, UserModule],
+    }), AuthModule, ProductsModule, UserModule, MessageModule, ChatModule],
   controllers: [AppController],
   providers: [AppService],
 })
