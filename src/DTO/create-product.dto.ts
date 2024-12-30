@@ -3,5 +3,6 @@ export class CreateProductDto {
     price: number;
     category: string;
     imageUrl: string; // Path for the uploaded image
+    description: string;
   }
   

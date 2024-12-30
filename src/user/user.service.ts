@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateWriteOpResult } from 'mongoose';
 import { User, UserDocument } from 'src/Schemas/user.schema';
@@ -40,6 +40,16 @@ export class UserService {
 
       async find(): Promise<User[]> {
         return this.userModel.find().exec();
+      }
+      async findUsersWithProducts(): Promise<User[]> {
+        try {
+          return this.userModel.find({ products: { $exists: true, $ne: [] } }).populate('products').exec();
+        } catch (error) { 
+          if (error instanceof HttpException) {
+            throw error;
+          }
+          throw new InternalServerErrorException('An unexpected error occurred.');
+        }
       }
       async findUserById(userId: string): Promise<User> {
         return this.userModel.findById(userId).exec();

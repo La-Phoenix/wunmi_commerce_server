@@ -64,10 +64,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
   ) {
     const room = this.getRoomId(message.senderId, message.receiverId);
-    socket.join(room);
     const savedMessage = await this.chatService.saveMessage(message as Message);
-
+    
+    // Update for sender
     socket.emit('receive_message', savedMessage);
+    // Update for reciever
+    socket.to(room).emit('receive_message', savedMessage);
+    socket.join(room);
   }
 
   @SubscribeMessage('update_message')
@@ -83,11 +86,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       updateData.messageId,
       updateData.content,
     );
-    console.log(updatedMessage)
 
     const room = this.getRoomId(updatedMessage.senderId, updatedMessage.receiverId);
-    socket.join(room)
+    // Update for sender
     socket.emit('message_updated', updatedMessage);
+    // Update for reciever
+    socket.to(room).emit('message_updated', updatedMessage);
+    socket.join(room)
   }
 
   @SubscribeMessage('delete_message')
@@ -99,8 +104,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const deletedMessage = await this.chatService.deleteMessage(deleteData.messageId);
 
     const room = this.getRoomId(deletedMessage.senderId, deletedMessage.receiverId);
+    
+    // Update for reciever
+    socket.to(room).emit('message_deleted', deletedMessage._id);
     socket.join(room)
-
+    // Update for sender
     socket.emit('message_deleted', deletedMessage._id); // Notify clients
   }
 

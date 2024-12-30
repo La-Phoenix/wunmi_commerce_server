@@ -52,6 +52,7 @@ async deleteMessage(messageId: string) {
       {
         $match: {
           $or: [{ senderId: userId }, { receiverId: userId }],
+          deleted: { $ne: true }, // Exclude deleted messages
         },
       },
       {

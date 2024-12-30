@@ -15,6 +15,8 @@ export class Product extends Document {
 
   @Prop({ required: true })
   category: string;
+  @Prop({ required: true })
+  description: string;
 
   @Prop({ required: true })
   imageUrl: string; // URL or path for the uploaded image

@@ -12,10 +12,10 @@ export class ProductsService {
     private readonly httpService: HttpService) {}
 
   // Fetch all products
-  async fetchAllProducts(): Promise<any> {
+  async fetchAllProducts(): Promise<Product[]> {
     try {
-      const response = await firstValueFrom(this.httpService.get('https://api.escuelajs.co/api/v1/products'));
-      return response.data;
+      const products = await this.productModel.find({});
+      return products;
     } catch (error) {
       throw new HttpException('Failed to fetch products', HttpStatus.BAD_GATEWAY);
     }
@@ -42,12 +42,33 @@ export class ProductsService {
   }
 
   // Fetch a single product by ID
-  async fetchProductById(productId: number): Promise<any> {
+  async fetchProductById(productId: string): Promise<Product> {
     try {
-      const response = await firstValueFrom(this.httpService.get(`https://api.escuelajs.co/api/v1/products/${productId}`));
-      return response.data;
+      const product = await this.productModel.findById(productId);
+  
+      if (!product) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+  
+      return product;
     } catch (error) {
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     }
   }
+  async fetchProductsByCategory(categogry: string): Promise<Product[]> {
+    try {
+      const products = await this.productModel.find({
+        category: categogry, // Ensure the product isn't flagged as deleted
+      });
+  
+      if (products.length == 0) {
+        throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
+      }
+  
+      return products;
+    } catch (error) {
+      throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
+    }
+  }
+  
 }

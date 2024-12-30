@@ -35,8 +35,13 @@ export class ProductsController {
 
   // GET /products/:id - Get a single product by ID
   @Get(':id')
-  async getProductById(@Param('id', ParseIntPipe) id: number) {
+  async getProductById(@Param('id') id: string) {
     return await this.productsService.fetchProductById(id);
+  }
+  @Get('category/:category')
+  async getProductsByCategory(@Param('category') category: string) {
+    console.log(category)
+    return await this.productsService.fetchProductsByCategory(category);
   }
 
   @Post('upload')

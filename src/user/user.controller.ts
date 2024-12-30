@@ -13,12 +13,18 @@ export class UserController {
     try {
       const users = await this.userService.find();
       return users;
-    } catch (error) {
+    } catch (error) { 
       if (error instanceof HttpException) {
         throw error;
       }
       throw new InternalServerErrorException('An unexpected error occurred.');
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('with-products')
+  async getUsersWithProducts() { 
+    return this.userService.findUsersWithProducts();
   }
 
   @UseGuards(JwtAuthGuard)
