@@ -12,6 +12,7 @@ import {
   Request,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from 'src/DTO/create-product.dto';
@@ -21,6 +22,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/Schemas/user.schema';
 import { Product } from 'src/Schemas/product.schema';
+import { SearchQueryDto } from 'src/DTO/search-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -31,6 +33,21 @@ export class ProductsController {
   @Get()
   async getAllProducts() {
     return await this.productsService.fetchAllProducts();
+  }
+
+  // Product Search API
+@Get('search')
+@UseGuards(JwtAuthGuard)
+async search(@Query() searchQueryDto: SearchQueryDto) {
+  try {
+    const results = await this.productsService.searchProducts(searchQueryDto);
+    return results;
+  } catch (error) {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+      throw new HttpException('An error occurred during product creation', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   // GET /products/:id - Get a single product by ID
@@ -90,5 +107,6 @@ export class ProductsController {
     throw new HttpException('An error occurred during product creation', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
- 
+
+
 }

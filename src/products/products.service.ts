@@ -1,10 +1,11 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CreateProductDto } from 'src/DTO/create-product.dto';
 import { Product, ProductDocument } from 'src/Schemas/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { SearchQueryDto } from 'src/DTO/search-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -69,6 +70,38 @@ export class ProductsService {
     } catch (error) {
       throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
     }
+  }
+
+
+  // Search based on query, category and/or price range
+  async searchProducts(searchQueryDto: SearchQueryDto) {
+    const { query, category, priceRange } = searchQueryDto;
+
+    const filter: any = {};
+
+    if (query) {
+      filter.name = { $regex: query, $options: 'i' }; // case-insensitive search
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (priceRange && priceRange[0] > priceRange[1]) {
+      throw new BadRequestException('Invalid price range');
+    }
+
+    if (priceRange && priceRange.length === 2) {
+      filter.price = { $gte: priceRange[0], $lte: priceRange[1] };
+    }
+
+    
+    const products = await this.productModel.find(filter).exec();
+
+    if (!products.length) {
+      throw new NotFoundException('No products found');
+    }
+    return products;
   }
   
 }
