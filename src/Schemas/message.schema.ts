@@ -23,7 +23,7 @@ export class Message {
   @Prop({ default: false }) // Soft delete flag
   deleted: boolean;
 
-  @Prop({ default: null }) // Optional field for the time of deletion
+  @Prop({ type: Date, default: null }) // Optional field for the time of deletion
   deletedAt: Date | null;
 }
 
