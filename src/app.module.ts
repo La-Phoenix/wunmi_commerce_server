@@ -23,7 +23,7 @@ dotenv.config();
 
 @Module({
   imports: [ 
-    MongooseModule.forRoot(process.env.MONGO_URI) ,
+    MongooseModule.forRoot(process.env.MONGO_URI!) ,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, mailConfig, dbConfig], // Load configurations

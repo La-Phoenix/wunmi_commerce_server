@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { OAuth2Client } from 'google-auth-library';
 import { Request, Response } from 'express';
 import { User } from '../Schemas/user.schema';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { MailService } from '../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';

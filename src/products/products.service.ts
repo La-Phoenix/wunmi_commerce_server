@@ -1,11 +1,11 @@
 import { Injectable, HttpException, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { CreateProductDto } from 'src/DTO/create-product.dto';
-import { Product, ProductDocument } from 'src/Schemas/product.schema';
+import { CreateProductDto } from '../DTO/create-product.dto';
+import { Product, ProductDocument } from '../Schemas/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { SearchQueryDto } from 'src/DTO/search-product.dto';
+import { SearchQueryDto } from '../DTO/search-product.dto';
 
 @Injectable()
 export class ProductsService {

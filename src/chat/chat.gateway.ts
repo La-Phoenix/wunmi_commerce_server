@@ -6,9 +6,9 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { Message } from 'src/Schemas/message.schema';
+import { Message } from '../Schemas/message.schema';
 
 @WebSocketGateway({
   cors: {

@@ -1,4 +1,4 @@
-// src/products/products.controller.ts
+// ../products/products.controller.ts
 import {
   Controller,
   Post,
@@ -15,14 +15,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateProductDto } from 'src/DTO/create-product.dto';
-import { storage } from 'src/multer-storage-cloudinary';
+import { CreateProductDto } from '../DTO/create-product.dto';
+import { storage } from '../multer-storage-cloudinary';
 import { ProductsService } from './products.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/Schemas/user.schema';
-import { Product } from 'src/Schemas/product.schema';
-import { SearchQueryDto } from 'src/DTO/search-product.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UserService } from '../user/user.service';
+import { User } from '../Schemas/user.schema';
+import { Product } from '../Schemas/product.schema';
+import { SearchQueryDto } from '../DTO/search-product.dto';
 
 @Controller('products')
 export class ProductsController {
