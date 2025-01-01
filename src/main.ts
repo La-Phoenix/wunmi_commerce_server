@@ -1,28 +1,70 @@
+// import { NestFactory } from '@nestjs/core';
+// import { AppModule } from './app.module';
+// import * as dotenv from 'dotenv';
+// import * as cookieParser from "cookie-parser";
+
+
+// dotenv.config(); // Load environment variables from .env file
+
+// async function bootstrap() {
+  
+//   const app = await NestFactory.create(AppModule);
+
+
+//   app.use(cookieParser());
+//   // Enable CORS
+//   app.enableCors({
+//     origin: ['http://localhost:5173', 'https://accounts.google.com'],
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     credentials: true,
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+//     exposedHeaders: ['Content-Range', 'X-Content-Range'],
+//   });
+
+ 
+//   app.setGlobalPrefix('api/v1');
+//   await app.listen(process.env.PORT ?? 3000);
+// }
+// bootstrap();
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
-import * as cookieParser from "cookie-parser";
+import * as cookieParser from 'cookie-parser';
+import serverlessExpress from '@vendia/serverless-express';
+import { APIGatewayProxyEvent, Context, Handler, Callback } from 'aws-lambda';
 
+dotenv.config();
 
-dotenv.config(); // Load environment variables from .env file
+let server: Handler;
 
 async function bootstrap() {
-  
   const app = await NestFactory.create(AppModule);
 
-
   app.use(cookieParser());
-  // Enable CORS
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://accounts.google.com'],
+    origin: ['https://la-phoenix.github.io/wunmi_store', 'https://accounts.google.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
   });
 
- 
   app.setGlobalPrefix('api/v1');
-  await app.listen(process.env.PORT ?? 3000);
+  await app.init(); // Initialize without starting the HTTP server
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
 }
-bootstrap();
+
+// AWS Lambda Handler
+export const handler: Handler = async (
+  event: APIGatewayProxyEvent,
+  context: Context,
+  callback: Callback
+) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};
+
