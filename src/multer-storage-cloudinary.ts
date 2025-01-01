@@ -1,6 +1,6 @@
 import { v2 as cloudinary, MetadataFieldApiResponse } from 'cloudinary';
+import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import multer, { Multer } from 'multer';
 
 // Configure Cloudinary with environment variables
 cloudinary.config({
@@ -36,6 +36,6 @@ const upload = multer({
       cb(null, false);
     }
   },
-}) as Multer;
+});
 
 export default upload;
