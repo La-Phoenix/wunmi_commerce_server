@@ -13,7 +13,8 @@ async function bootstrap() {
   // app.use(cookieParser());
   // Enable CORS
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://la-phoenix.github.io/wunmi_store/', 'https://accounts.google.com'],
+    // origin: ['http://localhost:5173', 'https://la-phoenix.github.io/wunmi_store/', 'https://accounts.google.com'],
+    origin: '*', // Allow all origins
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
