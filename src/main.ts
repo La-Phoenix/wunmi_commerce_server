@@ -40,7 +40,6 @@ let server: Handler;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.use(cookieParser());
 
   app.enableCors({
@@ -52,19 +51,16 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api/v1');
-  await app.init(); // Initialize without starting the HTTP server
+  await app.init();
 
   const expressApp = app.getHttpAdapter().getInstance();
   return serverlessExpress({ app: expressApp });
 }
 
-// AWS Lambda Handler
-export const handler: Handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context,
-  callback: Callback
-) => {
-  server = server ?? (await bootstrap());
+export const handler: Handler = async (event, context, callback) => {
+  if (!server) {
+    server = await bootstrap(); // Only bootstrap the server once
+  }
   return server(event, context, callback);
 };
 
