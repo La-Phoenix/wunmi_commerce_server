@@ -10,7 +10,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,  // Replace with actual Client ID
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,  // Replace with actual Client Secret
-      callbackURL: 'http://localhost:3000/api/v1/auth/google/callback',  // Replace with your callback URL
+      // callbackURL: 'http://localhost:3000/api/v1/auth/google/callback',  // Replace with your callback URL
+      callbackURL: 'https://la-phoenix.github.io/wunmi_store/auth/google/callback',  // Replace with your callback URL
       scope: ['email', 'profile'],
     });
   }

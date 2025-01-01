@@ -4,10 +4,10 @@ import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../Schemas/user.schema';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { GoogleStrategy } from 'google.strategy';
 import { JwtStrategy } from 'jwt.strategy';
 import { MailService } from '../mail/mail.service';
 import { UserService } from 'src/user/user.service';
+import { GoogleStrategy } from 'google.strategy';
 
 @Module({
   imports: [
