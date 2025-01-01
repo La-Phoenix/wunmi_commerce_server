@@ -34,7 +34,7 @@ export class ProductsService {
     }).exec();
   }
 
-  async addUserToProduct(productId: string, userId: string): Promise<Product> {
+  async addUserToProduct(productId: string, userId: string): Promise<Product | null> {
     return this.productModel.findByIdAndUpdate(
       productId,
       { $addToSet: { users: userId } }, // `$addToSet` ensures no duplicate users are added

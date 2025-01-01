@@ -1,6 +1,6 @@
 import { v2 as cloudinary, MetadataFieldApiResponse } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import * as multer from 'multer';
+import multer from 'multer';
 
 // Configure Cloudinary with environment variables
 cloudinary.config({
@@ -27,7 +27,7 @@ export const storage = new CloudinaryStorage({
 // Create the upload middleware with specified file filter
 const upload = multer({
   storage,
-  fileFilter: (req, file, cb: multer.FileFilterCallback) => {
+  fileFilter: (req: any, file: any, cb: multer.FileFilterCallback) => {
     // Accept common image formats only
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
     if (allowedMimeTypes.includes(file.mimetype)) {

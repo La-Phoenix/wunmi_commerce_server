@@ -6,7 +6,7 @@ import { User, UserDocument } from '../Schemas/user.schema';
 @Injectable()
 export class UserService {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-    async addProductToUser(userId: string, productId: string): Promise<User> {
+    async addProductToUser(userId: string, productId: string): Promise<User | null> {
         return this.userModel.findByIdAndUpdate(
           userId, 
           { $addToSet: { products: productId } }, // `$addToSet` ensures no duplicate users are added
@@ -28,7 +28,7 @@ export class UserService {
         return user;
       }
 
-      async findByEmail(email: string): Promise<User> {
+      async findByEmail(email: string): Promise<User | null> {
         const user = await this.userModel.findOne({email}).select('-password');
         return user;
       }
@@ -51,7 +51,7 @@ export class UserService {
           throw new InternalServerErrorException('An unexpected error occurred.');
         }
       }
-      async findUserById(userId: string): Promise<User> {
+      async findUserById(userId: string): Promise<User | null> {
         return this.userModel.findById(userId).exec();
       }
 }
