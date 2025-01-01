@@ -17,6 +17,7 @@ import { mailConfig } from './config/mail.config';
 import { dbConfig } from './config/db.config';
 import { MessageModule } from './message/message.module';
 import { ChatModule } from './chat/chat.module';
+import { DefaultController } from './default/default.controller';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ dotenv.config();
       secret: process.env.JWT_SECRET, // Use a more secure secret in production
       signOptions: { expiresIn: '1d' },
     }), AuthModule, ProductsModule, UserModule, MessageModule, ChatModule],
-  controllers: [AppController],
+  controllers: [AppController, DefaultController, DefaultController],
   providers: [AppService],
 })
 export class AppModule implements OnModuleInit{
