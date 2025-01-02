@@ -78,8 +78,7 @@ export class AuthController {
       secure: false,            // Set to true in production (HTTPS)
       maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
     });
-    res.redirect(`http://localhost:5173`);
-
+    res.redirect(process.env.FRONTEND_URL!);
   }
 
 
