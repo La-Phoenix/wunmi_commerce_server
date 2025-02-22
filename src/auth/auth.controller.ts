@@ -76,9 +76,9 @@ export class AuthController {
     const token = await this.authService.generateToken(user);
     // Redirect back to the frontend with the token in the URL
     res.cookie('token', token, {
-      httpOnly: true,          // Makes the cookie accessible to JavaScript
-      secure: this.isProduction,                  // Use HTTPS-only cookies in production
-      sameSite: 'lax', // 'none' needed for cross-site in production
+      httpOnly: true,
+      secure: true,           // required if sameSite is 'none'
+      sameSite: 'none',       // allows cross-site usage
       maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
       
     });
