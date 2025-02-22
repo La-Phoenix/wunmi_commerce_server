@@ -79,6 +79,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,           // required if sameSite is 'none'
       sameSite: 'none',       // allows cross-site usage
+      domain: ".vercel.app",
       maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
       
     });
