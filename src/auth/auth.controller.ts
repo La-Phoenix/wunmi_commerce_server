@@ -20,6 +20,7 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
   private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  private isProduction = process.env.NODE_ENV === 'production';
 
   @Post('register')
   async register(@Body() body: { name: string; confirmPassword: string, email: string }, @Res() res: Response) {
@@ -54,7 +55,8 @@ export class AuthController {
 
     res.cookie('token', token, {
         httpOnly: true,          // Makes the cookie inaccessible to JavaScript
-        secure: false,            // Set to true in production (HTTPS)
+        secure: this.isProduction,                  // Use HTTPS-only cookies in production
+        sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
         maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
       });
     return res.json({...user });
@@ -75,8 +77,10 @@ export class AuthController {
     // Redirect back to the frontend with the token in the URL
     res.cookie('token', token, {
       httpOnly: false,          // Makes the cookie inaccessible to JavaScript
-      secure: false,            // Set to true in production (HTTPS)
+      secure: this.isProduction,                  // Use HTTPS-only cookies in production
+      sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
       maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
+      
     });
     res.redirect(process.env.FRONTEND_URL!);
   }
@@ -90,7 +94,8 @@ export class AuthController {
 
       res.cookie('token', token, {
         httpOnly: false,          // Makes the cookie inaccessible to JavaScript
-        secure: false,            // Set to true in production (HTTPS)
+        secure: this.isProduction,                  // Use HTTPS-only cookies in production
+        sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
         maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
       });
 
