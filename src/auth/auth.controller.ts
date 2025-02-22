@@ -78,7 +78,7 @@ export class AuthController {
     res.cookie('token', token, {
       httpOnly: false,          // Makes the cookie accessible to JavaScript
       secure: this.isProduction,                  // Use HTTPS-only cookies in production
-      sameSite: 'lax', // 'none' needed for cross-site in production
+      sameSite: 'none', // 'none' needed for cross-site in production
       maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
       
     });
