@@ -55,6 +55,7 @@ export class AuthController {
 
     res.cookie('token', token, {
         httpOnly: true,          // Makes the cookie inaccessible to JavaScript
+        domain: this.isProduction ? '.vercel.app' : undefined, // Set domain for cross-site cookies
         secure: this.isProduction,                  // Use HTTPS-only cookies in production
         sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
         maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
@@ -76,6 +77,7 @@ export class AuthController {
     const token = await this.authService.generateToken(user);
     // Redirect back to the frontend with the token in the URL
     res.cookie('token', token, {
+      domain: this.isProduction ? '.vercel.app' : undefined, // Set domain for cross-site cookies
       httpOnly: false,          // Makes the cookie inaccessible to JavaScript
       secure: this.isProduction,                  // Use HTTPS-only cookies in production
       sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
@@ -94,6 +96,7 @@ export class AuthController {
 
       res.cookie('token', token, {
         httpOnly: false,          // Makes the cookie inaccessible to JavaScript
+        domain: this.isProduction ? '.vercel.app' : undefined, // Set domain for cross-site cookies
         secure: this.isProduction,                  // Use HTTPS-only cookies in production
         sameSite: this.isProduction ? 'none' : 'lax', // 'none' needed for cross-site in production
         maxAge: 24 * 60 * 60 * 1000, // Set expiry time (e.g., 1 day)
